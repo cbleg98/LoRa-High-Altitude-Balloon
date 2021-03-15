@@ -1,3 +1,11 @@
+/* LoRa_Sample_Struct_Payload/main.c
+ * This struct sample was created to demonstrate how to save/use the data from the board in a struct format
+ * 
+ * Copyright © Montana Space Grant Consortium.
+ *
+ * @author Cameron Blegen
+ */
+
 #include <msp430.h> 
 
 int i;
