@@ -1,3 +1,12 @@
+/* LoRa_Board_Serial_Print/main.c
+ * This is the MAIN firmware (version 1) for running this firmware on the MSP430FR2355 based board
+ * 
+ * Copyright © Montana Space Grant Consortium.
+ *
+ * @author Cameron Blegen
+ * @author (SPI methods and setup) Larson Brandstetter
+ */
+
 #include <msp430.h> 
 #include "reg_map.h"
 #include "I2C_defs.h"
