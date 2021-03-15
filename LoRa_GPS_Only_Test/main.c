@@ -1,12 +1,14 @@
-/*
- * main.c
- *
+/* LoRa_GPS_Only_Test/main.c
  * This code is the test bed for sending the data to the
  * featherboard LoRa radio ground station
- *
+ * 
  * Version 2.0
  *
+ * Copyright © Montana Space Grant Consortium.
+ *
+ * @author Cameron Blegen
  */
+
 
 #include <msp430.h> 
 #include "reg_map.h"
