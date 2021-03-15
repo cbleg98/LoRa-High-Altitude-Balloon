@@ -1,3 +1,11 @@
+/* LoRa_Flight_Firmware_V1/main.c
+ * Gets all of the sensor data via I2C. This packages all of the data nicely for use later. You're welcome!
+ * 
+ * Copyright © Montana Space Grant Consortium.
+ *
+ * @author Cameron Blegen
+ */
+
 #include <msp430.h> 
 
 //I2C definitions for readability
