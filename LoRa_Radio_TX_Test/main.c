@@ -1,11 +1,10 @@
-/*
- * main.c
+/* LoRa_Radio_TX_Test/main.c
+ * Sends test data to the ground station in the correct format from the LoRa RF95 radio.
+ * 
+ * Copyright © Montana Space Grant Consortium.
  *
- * This code is the test bed for sending the data to the
- * featherboard LoRa radio ground station
- *
- * Version 2.0
- *
+ * @author Cameron Blegen
+ * @author (SPI methods and setup) Larson Brandstetter
  */
 
 #include <msp430.h> 
