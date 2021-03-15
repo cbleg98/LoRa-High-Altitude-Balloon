@@ -1,4 +1,4 @@
-/* LoRa_Board_Serial_Print/main.c
+/* LoRa_Flight_Firmware_V1/main.c
  * This is the MAIN firmware (version 1) for running this firmware on the MSP430FR2355 based board
  * 
  * Copyright © Montana Space Grant Consortium.
