@@ -1,3 +1,11 @@
+/* LoRa_Board_Serial_Print/main.c
+ * This firmware prints the board data to serial for debugging
+ * 
+ * Copyright © Montana Space Grant Consortium.
+ *
+ * @author Cameron Blegen
+ */
+
 #include <msp430.h> 
 
 int i, k;
