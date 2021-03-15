@@ -1,3 +1,11 @@
+/* LoRa_Board_UART_Test/main.c
+ * Configures the GPS and checks data being sent, option to set variable to see contents
+ * 
+ * Copyright © Montana Space Grant Consortium.
+ *
+ * @author Cameron Blegen
+ */
+
 #include <msp430.h> 
 
 char i;
