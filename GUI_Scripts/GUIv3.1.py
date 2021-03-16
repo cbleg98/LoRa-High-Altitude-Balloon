@@ -13,10 +13,10 @@ import serial
 
 __author__ = "Cameron Blegen & Adam Wulfing"
 __copyright__ = "Copyright, Montana Space Grant Consortium"
-__version__ = "3.0.0"
+__version__ = "3.1.1"
 
 # DEBUG
-DEBUG_ON = True
+DEBUG_ON = False
 
 # GUI
 csvFile = 'guiData.csv'
@@ -29,7 +29,6 @@ string_rec = ""
 payload = np.zeros(500)
 sensor_data = np.zeros(11)  # 0 = internal temp | 1 = external temp | 2 = accel x    | 3 = accel y    | 4 = accel z |
                             # 5 = pressure      | 6 = time          | 7 = GPS coords | 8 = GPS coords | 9 = height in m
-                            # 10 = pressure temp
 # NOTE, the gps coordinate format is converted from DDM to DD. Coordinates are given in decimal degrees.
 
 np.set_printoptions(suppress=True)
@@ -44,6 +43,7 @@ window = Tk()
 # set variable names
 ITvL = Label(window)
 ETvL = Label(window)
+ptvL = Label(window)
 aXvL = Label(window)
 aYvL = Label(window)
 aZvL = Label(window)
@@ -52,6 +52,8 @@ tivL = Label(window)
 lavL = Label(window)
 lovL = Label(window)
 atvL = Label(window)
+rivL = Label(window)
+snvL = Label(window)
 
 
 def close_window():
@@ -60,70 +62,86 @@ def close_window():
 
 
 def windowSetup():
-    window.geometry('350x400')
+    window.geometry('430x455')
     window.title("LoRa GUI")
 
     be = Button(window, text="Exit", width=21, bg="red", command=close_window)
-    be.grid(row=12, column=0)
+    be.grid(row=15, column=1)
 
-    labelIT = Label(window, text="Internal Temp  :")
-    labelET = Label(window, text="External Temp  :")
-    labelaX = Label(window, text="Acceleration X :")
-    labelaY = Label(window, text="Acceleration Y :")
-    labelaZ = Label(window, text="Acceleration Z :")
-    labelpr = Label(window, text="Pressure            :")
-    labelti = Label(window, text="Time                  :")
-    labella = Label(window, text="Latitude            :")
-    labello = Label(window, text="Longitude         :")
-    labelat = Label(window, text="Altitude              :")
-    labelb = Label(window, text="                ")
-    labelbl = Label(window, text="                ")
+    labelIT = Label(window, text="Internal Temp  :",font=("Helvetica",16))
+    labelET = Label(window, text="External Temp  :",font=("Helvetica",16))
+    labelpt = Label(window, text="pressure Temp  :",font=("Helvetica",16))
+    labelaX = Label(window, text="Acceleration X :",font=("Helvetica",16))
+    labelaY = Label(window, text="Acceleration Y :",font=("Helvetica",16))
+    labelaZ = Label(window, text="Acceleration Z :",font=("Helvetica",16))
+    labelpr = Label(window, text="Pressure            :",font=("Helvetica",16))
+    labelti = Label(window, text="Time                  :",font=("Helvetica",16))
+    labella = Label(window, text="Latitude            :",font=("Helvetica",16))
+    labello = Label(window, text="Longitude         :",font=("Helvetica",16))
+    labelat = Label(window, text="Altitude              :",font=("Helvetica",16))
+    labelri = Label(window, text="RSSI                  :",font=("Helvetica",16))
+    labelsn = Label(window, text="Signal to Noise  :", font=("Helvetica", 16))
+    labelb = Label(window, text="                ",font=("Helvetica",16))
+    labelbl = Label(window, text="                ",font=("Helvetica",16))
+    labelex = Label(window, text="                ",font=("Helvetica",16))#space for exit
 
-    unitIT = Label(window, text="℃")
-    unitET = Label(window, text="℃")
-    unitaX = Label(window, text="milli gs")
-    unitaY = Label(window, text="milli gs")
-    unitaZ = Label(window, text="milli gs")
-    unitpr = Label(window, text="mBar")
-    unitti = Label(window, text="UTC")
-    unitla = Label(window, text="Degrees")
-    unitlo = Label(window, text="Degrees")
-    unitat = Label(window, text="Meters")
+
+    unitIT = Label(window, text="℃",font=("Helvetica",12))
+    unitET = Label(window, text="℃",font=("Helvetica",12))
+    unitpt = Label(window, text="℃",font=("Helvetica",12))
+    unitaX = Label(window, text="milli gs",font=("Helvetica",12))
+    unitaY = Label(window, text="milli gs",font=("Helvetica",12))
+    unitaZ = Label(window, text="milli gs",font=("Helvetica",12))
+    unitpr = Label(window, text="mBar",font=("Helvetica",12))
+    unitti = Label(window, text="UTC",font=("Helvetica",12))
+    unitla = Label(window, text="Degrees",font=("Helvetica",12))
+    unitlo = Label(window, text="Degrees",font=("Helvetica",12))
+    unitat = Label(window, text="Meters",font=("Helvetica",12))
+    unitri = Label(window, text="dB",font=("Helvetica",12))
 
     unitIT.grid(row=0, column=2)
     unitET.grid(row=1, column=2)
-    unitaX.grid(row=2, column=2)
-    unitaY.grid(row=3, column=2)
-    unitaZ.grid(row=4, column=2)
-    unitpr.grid(row=5, column=2)
-    unitti.grid(row=6, column=2)
-    unitla.grid(row=7, column=2)
-    unitlo.grid(row=8, column=2)
-    unitat.grid(row=9, column=2)
+    unitpt.grid(row=2, column=2)
+    unitaX.grid(row=3, column=2)
+    unitaY.grid(row=4, column=2)
+    unitaZ.grid(row=5, column=2)
+    unitpr.grid(row=6, column=2)
+    unitti.grid(row=7, column=2)
+    unitla.grid(row=8, column=2)
+    unitlo.grid(row=9, column=2)
+    unitat.grid(row=10, column=2)
+    unitri.grid(row=11, column=2)
 
     labelIT.grid(row=0, column=0)
     labelET.grid(row=1, column=0)
-    labelaX.grid(row=2, column=0)
-    labelaY.grid(row=3, column=0)
-    labelaZ.grid(row=4, column=0)
-    labelpr.grid(row=5, column=0)
-    labelti.grid(row=6, column=0)
-    labella.grid(row=7, column=0)
-    labello.grid(row=8, column=0)
-    labelat.grid(row=9, column=0)
-    labelb.grid(row=10, column=0)
-    labelbl.grid(row=11, column=0)
+    labelpt.grid(row=2, column=0)
+    labelaX.grid(row=3, column=0)
+    labelaY.grid(row=4, column=0)
+    labelaZ.grid(row=5, column=0)
+    labelpr.grid(row=6, column=0)
+    labelti.grid(row=7, column=0)
+    labella.grid(row=8, column=0)
+    labello.grid(row=9, column=0)
+    labelat.grid(row=10, column=0)
+    labelri.grid(row=11, column=0)
+    labelsn.grid(row=12, column=0)
+    labelb.grid(row=13, column=0)
+    labelbl.grid(row=14, column=0)
+    labelbl.grid(row=15, column=0)
     #
     ITvL.grid(row=0, column=1)
     ETvL.grid(row=1, column=1)
-    aXvL.grid(row=2, column=1)
-    aYvL.grid(row=3, column=1)
-    aZvL.grid(row=4, column=1)
-    prvL.grid(row=5, column=1)
-    tivL.grid(row=6, column=1)
-    lavL.grid(row=7, column=1)
-    lovL.grid(row=8, column=1)
-    atvL.grid(row=9, column=1)
+    ptvL.grid(row=2, column=1)
+    aXvL.grid(row=3, column=1)
+    aYvL.grid(row=4, column=1)
+    aZvL.grid(row=5, column=1)
+    prvL.grid(row=6, column=1)
+    tivL.grid(row=7, column=1)
+    lavL.grid(row=8, column=1)
+    lovL.grid(row=9, column=1)
+    atvL.grid(row=10, column=1)
+    rivL.grid(row=11, column=1)
+    snvL.grid(row=12, column=1)
 
     headers = ['iTemp', 'eTemp', 'X', 'Y', 'Z', 'pressure', 'time', 'GPS coord', 'GPS coord', 'Alt']
     if DEBUG_ON:
@@ -172,25 +190,26 @@ def loop():
         payload = np.asarray(string_rec.split(','))
         RSSI_SNR = payload[-2:]
         payload = payload[:-2].astype(np.int)
-        print("RSSI_SNR")
-        print(RSSI_SNR)
+        if DEBUG_ON:
+            print("RSSI_SNR")
+            print(RSSI_SNR)
         # print(payload)
         if payload[0] != 91:  # Check for sensor data error and go back to start of loop
             if DEBUG_ON:
                 print("ERROR: Sensor data invalid")
             continue
         payload_sensors = payload[1:19]
-        print("payload")
-        print(payload_sensors)
+        if DEBUG_ON:
+            print("payload")
+            print(payload_sensors)
         payload_gps = np.asarray(("".join([chr(item) for item in payload[20:-2]])).split(','), np.str)
         if len(payload_gps) == 1:
             if DEBUG_ON:
                 print("ERROR: GPS data invalid, try power cycle?")
             continue
-        print("gps")
-        print(payload_gps)
-
-
+        if DEBUG_ON:
+            print("gps")
+            print(payload_gps)
 
         # ARRAY TABLE #
         # 0 = internal temp | 1 = external temp | 2 = accel x | 3 = accel y | 4 = accel z | 5 = pressure
@@ -202,7 +221,7 @@ def loop():
         sensor_data[5] = (payload_sensors[10] << 24) + (payload_sensors[11] << 16) + (payload_sensors[12] << 8) + \
                          payload_sensors[13]
         sensor_data[10] = (payload_sensors[14] << 24) + (payload_sensors[15] << 16) + (payload_sensors[16] << 8) + \
-                         payload_sensors[17]
+                          payload_sensors[17]
 
         # ------- Convert Payload Items -------
         for i in range(5):  # loop through the first 5 values and assign them to the "payload"
@@ -414,16 +433,22 @@ def loop():
             if DEBUG_ON:
                 print("TIME ERROR")
 
-        ITvL.config(text=np.around(sensor_data[0], 4))
-        ETvL.config(text=np.around(sensor_data[1], 4))
-        aXvL.config(text=np.around(sensor_data[2], 4))
-        aYvL.config(text=np.around(sensor_data[3], 4))
-        aZvL.config(text=np.around(sensor_data[4], 4))
-        prvL.config(text=np.around(sensor_data[5], 4))
-        tivL.config(text=(time[0] + time[1] + ":" + time[2] + time[3] + ":" + time[4] + time[5]))
-        lavL.config(text=np.around(sensor_data[7], 4))
-        lovL.config(text=np.around(sensor_data[8], 4))
-        atvL.config(text=np.around(sensor_data[9], 4))
+        ITvL.config(text=np.around(sensor_data[0], 4),font=("Helvetica",16))
+        ETvL.config(text=np.around(sensor_data[1], 4),font=("Helvetica",16))
+        ptvL.config(text=np.around(sensor_data[10], 4),font=("Helvetica",16))
+        aXvL.config(text=np.around(sensor_data[2], 4),font=("Helvetica",16))
+        aYvL.config(text=np.around(sensor_data[3], 4),font=("Helvetica",16))
+        aZvL.config(text=np.around(sensor_data[4], 4),font=("Helvetica",16))
+        prvL.config(text=np.around(sensor_data[5], 4),font=("Helvetica",16))
+        if time != 0:
+            tivL.config(text=(time[0] + time[1] + ":" + time[2] + time[3] + ":" + time[4] + time[5]),font=("Helvetica",16))
+        else:
+            tivL.config(text="00:00:00",font=("Helvetica", 16))
+        lavL.config(text=np.around(sensor_data[7], 4),font=("Helvetica",16))
+        lovL.config(text=np.around(sensor_data[8], 4),font=("Helvetica",16))
+        atvL.config(text=np.around(sensor_data[9], 4),font=("Helvetica",16))
+        rivL.config(text=RSSI_SNR[0],font=("Helvetica",16))
+        snvL.config(text=RSSI_SNR[1], font=("Helvetica", 16))
 
         # read to csv and save
         with open(csvFile, 'a') as f:

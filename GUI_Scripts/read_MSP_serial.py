@@ -62,9 +62,9 @@ while 1:
     if payload[0] != 91:  # Check for sensor data error and go back to start of loop
         print("ERROR: Sensor data invalid")
         continue
-    payload_sensors = payload[1:15]
-    # print(payload_sensors)
-    payload_gps = np.asarray(("".join([chr(item) for item in payload[16:]])).split(','), np.str)
+    payload_sensors = payload[1:19]
+    print(payload_sensors)
+    payload_gps = np.asarray(("".join([chr(item) for item in payload[20:]])).split(','), np.str)
     if len(payload_gps) == 1:
         print("ERROR: GPS data invalid, try power cycle?")
         continue
@@ -78,6 +78,8 @@ while 1:
     sensor_data[3] = (payload_sensors[6] << 8) + payload_sensors[7]  # set accel y
     sensor_data[4] = (payload_sensors[8] << 8) + payload_sensors[9]  # set accel z
     sensor_data[5] = (payload_sensors[10] << 24) + (payload_sensors[11] << 16) + (payload_sensors[12] << 8) + payload_sensors[13]
+    sensor_data[10] = (payload_sensors[14] << 24) + (payload_sensors[15] << 16) + (payload_sensors[16] << 8) + \
+                      payload_sensors[17]
 
     # ------- Convert Payload Items -------
     for i in range(5):  # loop through the first 5 values and assign them to the "payload"
@@ -114,8 +116,12 @@ while 1:
     gga_ind = np.where(payload_gps == "$GNGGA")  # find the index of GNGGA
     if len(gga_ind[0]) != 0:
         # print("GGA: " + gga_ind.astype(str))
-        sensor_data[6] = (payload_gps[gga_ind[0][0] + 1].astype(np.float)).astype(np.int64)
-        found_gga = True
+        try:
+            sensor_data[6] = (payload_gps[gga_ind[0][0] + 1].astype(np.float)).astype(np.int64)
+            found_gga = True
+        except ValueError:
+            found_gga = False
+            print("Could not get GPS time, setting to 0")
     else:  # if we don't get this string, do some searching to try to get it another way
         for i in range(len(payload_gps)):
             if "$GNGGA" in payload_gps[i]:
