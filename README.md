@@ -3,7 +3,7 @@ This is the respository for Montana State University LoRa group capstone project
 
 ## Structure
 LoRa-High-Altitude-Balloon/project_folders/main.c <-- Each project contains the firmware (and included header.h files) needed to run different parts of the board.
-LoRa-High-Altitude-Balloon/GUI <-- This folder contains the scripts for the GUI/parse code (python)
+LoRa-High-Altitude-Balloon/GUI_scripts <-- This folder contains the scripts for the GUI/parse code (python)
 
 ### Firmware
 Each of the folders contain a different piece of the firmware puzzle. All of these pieces are finalized in the "Firmware V1" folder which will work turn-key when flashed to the custom MSGC board.
