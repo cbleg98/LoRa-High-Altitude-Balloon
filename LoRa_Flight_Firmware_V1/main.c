@@ -4,7 +4,7 @@
  * Copyright © Montana Space Grant Consortium.
  *
  * @author Cameron Blegen
- * @author (SPI methods and setup) Larson Brandstetter
+ * @author Larson Brandstetter
  */
 
 #include <msp430.h> 
@@ -553,12 +553,11 @@ int main(void)
           delay(SPI_DELAY);
           UCA1TXBUF = 0x5B;           // Header Key
           delay(SPI_DELAY);
-          UCA1TXBUF = 0x5B;           // Start of transmission character
+          UCA1TXBUF = 0x5B;           // Start of transmission character (deprecated)
           delay(SPI_DELAY);
 
           //transmit sensor data
           SPI_tx_two_bytes(LORA_PAYLOAD.LORA_int_temp);
-          SPI_tx_two_bytes(LORA_PAYLOAD.LORA_ext_temp);
           SPI_tx_two_bytes(LORA_PAYLOAD.LORA_ext_temp);
           SPI_tx_two_bytes(LORA_PAYLOAD.LORA_accel_x);
           SPI_tx_two_bytes(LORA_PAYLOAD.LORA_accel_y);
@@ -570,6 +569,14 @@ int main(void)
           UCA1TXBUF = (LORA_PAYLOAD.LORA_pressure >> 8);
           delay(SPI_DELAY);
           UCA1TXBUF = (LORA_PAYLOAD.LORA_pressure);
+          delay(SPI_DELAY);
+          UCA1TXBUF = (press_temp >> 24);
+          delay(SPI_DELAY);
+          UCA1TXBUF = (press_temp >> 16);
+          delay(SPI_DELAY);
+          UCA1TXBUF = (press_temp >> 8);
+          delay(SPI_DELAY);
+          UCA1TXBUF = (press_temp);
           delay(SPI_DELAY);
           //transmit GPS data
           for(i=0; i <100; i++){
@@ -583,7 +590,7 @@ int main(void)
           SPI_tx(OPMODE_01, MODE_LORA_TX); //Set to Transmit LoRa
 
           //long delay because we don't need to send that often and we wanna get the GPS data
-          for(i=0;i<15;i++){
+          for(i=0;i<12;i++){
             delay(10000);
           }
 
