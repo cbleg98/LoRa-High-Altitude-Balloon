@@ -1,7 +1,7 @@
 # GUI Code
 
 The following code is what is needed to flash on a LoRa enabled Featherboard M0 with adafruit display.
-This is based on code from Jonathan Chen and is modified to recieve/send data as we need it
+This is **based on code from Jonathan Chen** and is modified to recieve/send data as we need it
 
 ## RadioHead
 This library is included for quick reference, it is used in both of the firmware versions
