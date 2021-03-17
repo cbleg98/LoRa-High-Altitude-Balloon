@@ -553,7 +553,7 @@ int main(void)
           delay(SPI_DELAY);
           UCA1TXBUF = 0x5B;           // Header Key
           delay(SPI_DELAY);
-          UCA1TXBUF = 0x5B;           // Start of transmission character (deprecated)
+          UCA1TXBUF = 0x5B;           // Start of transmission character
           delay(SPI_DELAY);
 
           //transmit sensor data
