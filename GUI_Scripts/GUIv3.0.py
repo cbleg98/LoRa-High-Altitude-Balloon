@@ -421,8 +421,8 @@ def loop():
         aZvL.config(text=np.around(sensor_data[4], 4))
         prvL.config(text=np.around(sensor_data[5], 4))
         tivL.config(text=(time[0] + time[1] + ":" + time[2] + time[3] + ":" + time[4] + time[5]))
-        lavL.config(text=np.around(sensor_data[7], 4))
-        lovL.config(text=np.around(sensor_data[8], 4))
+        lavL.config(text=sensor_data[7])
+        lovL.config(text=sensor_data[8])
         atvL.config(text=np.around(sensor_data[9], 4))
 
         # read to csv and save

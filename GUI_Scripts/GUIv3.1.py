@@ -16,7 +16,7 @@ __copyright__ = "Copyright, Montana Space Grant Consortium"
 __version__ = "3.1.1"
 
 # DEBUG
-DEBUG_ON = False
+DEBUG_ON = True
 
 # GUI
 csvFile = 'guiData.csv'
@@ -199,6 +199,7 @@ def loop():
                 print("ERROR: Sensor data invalid")
             continue
         payload_sensors = payload[1:19]
+        payload_sensors[14] = 0
         if DEBUG_ON:
             print("payload")
             print(payload_sensors)
@@ -263,7 +264,8 @@ def loop():
                 found_gga = True
             except ValueError:
                 found_gga = False
-                print("Could not get GPS time, setting to 0")
+                if DEBUG_ON:
+                    print("Could not get GPS time, setting to 0")
         else:  # if we don't get this string, do some searching to try to get it another way
             for i in range(len(payload_gps)):
                 if "$GNGGA" in payload_gps[i]:
@@ -429,6 +431,9 @@ def loop():
         time = list((sensor_data[6].astype(np.int)).astype(np.str))
         if len(time) == 5:
             time.insert(0, '0')
+        elif len(time) == 4:
+            time.insert(0, '0')
+            time.insert(0, '0')
         elif len(time) != 6:
             if DEBUG_ON:
                 print("TIME ERROR")
@@ -440,9 +445,9 @@ def loop():
         aYvL.config(text=np.around(sensor_data[3], 4),font=("Helvetica",16))
         aZvL.config(text=np.around(sensor_data[4], 4),font=("Helvetica",16))
         prvL.config(text=np.around(sensor_data[5], 4),font=("Helvetica",16))
-        if time != 0:
+        try:
             tivL.config(text=(time[0] + time[1] + ":" + time[2] + time[3] + ":" + time[4] + time[5]),font=("Helvetica",16))
-        else:
+        except IndexError:
             tivL.config(text="00:00:00",font=("Helvetica", 16))
         lavL.config(text=np.around(sensor_data[7], 4),font=("Helvetica",16))
         lovL.config(text=np.around(sensor_data[8], 4),font=("Helvetica",16))
