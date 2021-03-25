@@ -12,7 +12,7 @@
 #include "I2C_defs.h"
 
 //------Configurable Parameters------
-#define PAYLOAD_LEN 0x79
+#define PAYLOAD_LEN 0x7D
 #define I2C_DELAY 5
 #define SPI_DELAY 20
 
@@ -28,7 +28,7 @@ struct payload{
 };
 
 //--------------Globals--------------------
-char j, k, h;
+char j, k, h, m;
 char i2c_status = 0x00; // 0b00000000 -- | 0 | 0 | 0 | 0 || 0 | 0 | 0 | 1-NAK | (currently unused)
 // char temp_config_int, temp_config_ext; //uncomment this line if uncommenting the lines that get the config of the temp sensors
 int i;
@@ -45,6 +45,10 @@ char diable_GSV[] = {'$','P','U','B','X',',','4','0',',','G','S','V',',','0',','
 char diable_GSA[] = {'$','P','U','B','X',',','4','0',',','G','S','A',',','0',',','0',',','0',',','0',',','0',',','0','*','4','E','\r','\n'};
 char diable_VTG[] = {'$','P','U','B','X',',','4','0',',','V','T','G',',','0',',','0',',','0',',','0',',','0',',','0','*','5','E','\r','\n'};
 char diable_RMC[] = {'$','P','U','B','X',',','4','0',',','R','M','C',',','0',',','0',',','0',',','0',',','0',',','0','*','4','7','\r','\n'};
+//char diable_GGA[] = {'$','P','U','B','X',',','4','0',',','G','G','A',',','0',',','0',',','0',',','0',',','0',',','0','*','5','A','\r','\n'};
+//char poll_airborne[] = {0xB5, 0x62, 0x06, 0x24, 0x00, 0x2A, 0x5A};
+//char poll_airborne[] = {0xB5, 0x62, 0x06, 0x24, 0x00, 0x00, 0x2A, 0x84};
+char set_airborne_2g[] = {0xB5, 0x62, 0x06, 0x24, 0x24, 0x00, 0xFF, 0xFF, 0x07, 0x03, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x05, 0x00, 0xFA, 0x00, 0xFA, 0x00, 0x64, 0x00, 0x2C, 0x01, 0x00, 0x00, 0x00, 0x00, 0x10, 0x27, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x4E, 0xFD};
 char GPS_GNGGA[100]; //this holds the char array we want
 
 //----LORA STRUCT----
@@ -467,6 +471,12 @@ int main(void)
         UART_config_GPS_msgs(diable_GSA);
         UART_config_GPS_msgs(diable_VTG);
         UART_config_GPS_msgs(diable_RMC);
+        //UART_config_GPS_msgs(diable_GGA);
+        for(m=0; m<44; m++){
+            UCA0TXBUF = set_airborne_2g[m];  //set to mode 7 airborne < 2g
+            P6OUT ^= BIT1; //toggle LED
+            for(j=0; j<150; j++){}
+        }
     }
     k = 0; //set k=0 to ensure manual incrementing of k for UART is setup correctly
     //fixes a bug where the array skips the first character, always a $
@@ -478,12 +488,19 @@ int main(void)
     //}
     //LORA_PAYLOAD.LORA_GPS[95] = '\n';
 
-    UCA0IE &= ~UCRXIE; //disable UART receive interrupt (do this here so we don't recieve data too early)
+    UCA0IE &= ~UCRXIE; //disable UART receive interrupt (do this here so we don't receive data too early)
     __enable_interrupt();
 
     delay(10000);
 
     while(1){
+
+        //Uncomment to check that the airborne mode was set correctly
+        /*for(m=0; m<8; m++){
+            UCA0TXBUF = poll_airborne[m];
+            for(j=0; j<150; j++){}
+        }
+        delay(5000);*/
 
         //get temperatures
        int_temp = read_temp(INT_TEMP_ADDR, TEMP_MSB);
