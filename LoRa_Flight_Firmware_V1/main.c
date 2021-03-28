@@ -28,7 +28,8 @@ struct payload{
 };
 
 //--------------Globals--------------------
-char j, k, h, m;
+char j, k, m;
+unsigned char h;
 char i2c_status = 0x00; // 0b00000000 -- | 0 | 0 | 0 | 0 || 0 | 0 | 0 | 1-NAK | (currently unused)
 // char temp_config_int, temp_config_ext; //uncomment this line if uncommenting the lines that get the config of the temp sensors
 int i;
