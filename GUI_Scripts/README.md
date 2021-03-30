@@ -1,11 +1,8 @@
 # GUI CODE
 This code will display the results of our board sending data and the ground station receiving it.
 
-## GUI 3.3
-**GUI 3.3 is untested, reccomended using 3.2 until this can be tested, or test to make sure it does what you want first.**
-
-## GUI 3.2
-**GUI 3.2 is the most up-to-date and stable version.** Use this to receive data and display it in a nice to read way.
+## GUI 3.6
+**This is the stable build of V3. Use this one for using stock LoRa board from MSGC lab**
 
 **NOTE:** You can use the global variable in this script "DEBUG_ON = True/False" to see more verbose data, turn to False for
 a faster and lighterweight program.
